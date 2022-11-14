@@ -4,9 +4,9 @@ on:
     branches:
       - master
 jobs:
-  build:
+  test: # names the job
     strategy:
-      fail-fast: false
+      fail-fast: false # tells github to not run further steps if this one fails
       matrix:
         java:
           - 11
@@ -14,35 +14,34 @@ jobs:
         os:
           - ubuntu-latest
           - windows-latest
-    runs-on: '${{ matrix.os }}'
+    runs-on: '${{ matrix.os }}' # sets the version of linux we want to use, should be what you have on your server
+
     services:
       postgres:
         image: postgres
         env:
           POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
         options: >-
-          --health-cmd pg_isready --health-interval 10s --health-timeout 5s
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
           --health-retries 5
         ports:
-          - '5432:5432'
+          - 5432:5432
+
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup user
-      run: >-
-        psql postgresql://postgres:postgres@localhost:5432 -c 'CREATE DATABASE
-        clawer; CREATE USER clawer WITH ENCRYPTED PASSWORD 'clawer'; GRANT ALL
-        PRIVILEGES ON DATABASE clawer TO clawer;'
-    - name: Setup Tables
-      run: >-
-        psql postgresql://postgres:postgres@localhost:5432/clawer -f
-        ./src/resources/public/crawl.sql
-    - uses: actions/checkout@v2
-    - name: 'Set up JDK ${{ matrix.java }}'
-      uses: actions/setup-java@v2
-      with:
-        java-version: '${{ matrix.java }}'
-        distribution: adopt
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
-    - name: Run tests
-      run: mvn -B test --file pom.xml
+      - uses: actions/checkout@v3 # fetches your commit to test it
+      - name: setup PGsql
+        run: psql postgresql://postgres:postgres@localhost:5432 -c 'CREATE DATABASE clawer; CREATE USER clawer WITH ENCRYPTED PASSWORD 'clawer'; GRANT ALL PRIVILEGES ON DATABASE clawer TO clawer;'
+      - name: Setup Tables
+        run: psql postgresql://postgres:postgres@localhost:5432/clawer -f ./postgres.sql
+      - name: 'Set up JDK ${{ matrix.java }}' # names our step
+        uses: actions/setup-node@v1 # downloads node and npm
+        with:
+          java-version: '${{ matrix.java }}'
+          distribution: adopt
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+      - name: Test with Maven
+        run: mvn -B test --file pom.xml
