@@ -63,3 +63,11 @@
 - - public static boolean validateURL(String url) a function to see if URL is actually valid
 - - public int getData(String url, String seed) a function to get the data from a website based on a certain seed
 
+## Built With
+
+            spring framework
+            postgresql
+            commons-validator
+            jacoco-maven-plugin
+            jsoup
+            apache  commons-csv 1.8
