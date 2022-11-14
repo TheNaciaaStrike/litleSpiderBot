@@ -33,7 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3 # fetches your commit to test it
       - name: setup PGsql
-        run: psql postgresql://postgres:postgres@localhost:5432 -c 'CREATE DATABASE clawer; CREATE USER clawer WITH ENCRYPTED PASSWORD 'clawer'; GRANT ALL PRIVILEGES ON DATABASE clawer TO clawer;'
+        run: psql postgresql://postgres:postgres@localhost:5432 -c 'CREATE DATABASE 'clawer'; CREATE USER clawer WITH ENCRYPTED PASSWORD 'clawer'; GRANT ALL PRIVILEGES ON DATABASE clawer TO 'clawer';'
       - name: Setup Tables
         run: psql postgresql://postgres:postgres@localhost:5432/clawer -f ./postgres.sql
       - name: 'Set up JDK ${{ matrix.java }}' # names our step
