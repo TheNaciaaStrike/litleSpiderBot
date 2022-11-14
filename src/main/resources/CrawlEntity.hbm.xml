@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.thenaciaastrike.litlespiderbot.DataStores.CrawlEntity" table="crawl" schema="public"
+           catalog="clawer">
+        <id name="crawlId">
+            <column name="crawl_ID" sql-type="bigint"/>
+        </id>
+        <property name="seed">
+            <column name="seed" sql-type="varchar(255)"/>
+        </property>
+        <property name="crawlUrl">
+            <column name="crawl_URL" sql-type="varchar(255)"/>
+        </property>
+        <property name="crawlHits">
+            <column name="crawl_hits" sql-type="varchar(255)"/>
+        </property>
+        <property name="crawlDate">
+            <column name="crawl_date" sql-type="date"/>
+        </property>
+    </class>
+</hibernate-mapping>
